@@ -655,10 +655,10 @@ impl VulkanBackend {
                 .map_err(err("present modes"))?;
             let mode = if self.vsync {
                 vk::PresentModeKHR::FIFO
-            } else if modes.contains(&vk::PresentModeKHR::MAILBOX) {
-                vk::PresentModeKHR::MAILBOX
             } else if modes.contains(&vk::PresentModeKHR::IMMEDIATE) {
                 vk::PresentModeKHR::IMMEDIATE
+            } else if modes.contains(&vk::PresentModeKHR::MAILBOX) {
+                vk::PresentModeKHR::MAILBOX
             } else {
                 vk::PresentModeKHR::FIFO
             };
