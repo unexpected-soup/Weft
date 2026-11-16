@@ -1,6 +1,7 @@
 # Weft modding quick start
 
-This page gets you from nothing to a working mod and points you to other pages of the docs. If you get stuck, see [Getting help and community](#getting-help-and-community).
+This page gets you from nothing to a working mod and points you to other pages.\
+If you get stuck, see [Getting help and community](#getting-help-and-community).
 
 ## Introduction
 The base game is a mod itself, and it has no private hooks and no special priority over other mods, so anything the base game can do, your mod can do too.\
@@ -13,14 +14,16 @@ When in doubt, look in `mods/base` and `mods/testmod` and copy from there.
 
 ## Creating a mod in two minutes
 
-To get started, copy `examples/examplemod/` to anywhere on your PC. Keep it close to the Weft's folder since might need to reference some files.
-It is a ready-made mod with one item, a setting and an event. Every kind of registration is written out there as a commented example, with a pointer to where the base game uses it.
-Rename the three things listed at the top of `lib.rs` and you can start building your mod.
+To get started, copy `examples/examplemod/` to some location on your PC. Keep it close to the Weft's folder since you might need to reference some files.
 
-Once you are done:
-1. Create a folder in `run/mods/` named after your mod.
-2. Build with `cargo build --release` and copy the library from `target/release/` into it.
-3. Symlink `assets/` into it. (or you could just copy them but it's quickly getting tedious).
+It is a ready-made mod with one item, a setting and an event. Every kind of registration is written out there as a commented example, with a pointer to where the base game uses it.
+
+Rename the three things listed at the top of `lib.rs` and you are ready to start modding.
+
+To run the mod:
+1. Build the mod with `cargo build --release`
+2. Create a folder in `run/mods/`, copy the built library from `target/release/` into it.
+3. Symlink `assets/` into it. (e.g. `ln -s my-mods/mymod/assets/ weft/run/mods/mymod/assets`).
 
 You should end up with something like that:
 
@@ -69,7 +72,7 @@ Each guide starts with the common case and goes on to the rare ones. The referen
 
 | I want to | Guide | Reference |
 |---|---|---|
-| Hook into game events, change damage or an attribute | [events](events.md), [attributes](details/attributes.md) | [reference](reference/events.md) |
+| Hook into game events,<br>change damage or an attribute | [events](events.md), [attributes](details/attributes.md) | [reference](reference/events.md) |
 | Test conditions | [conditions](details/conditions.md) | |
 | Add commands | [commands](details/commands.md) | [reference](reference/commands.md) |
 | Work with the world from code | [world API](world-api.md), [hitboxes](details/hitboxes.md), [world blocks](details/world-blocks.md), [world entities](details/world-entities.md) | [reference](reference/world.md) |
@@ -80,7 +83,7 @@ Each guide starts with the common case and goes on to the rare ones. The referen
 
 | I want to | Guide | Reference |
 |---|---|---|
-| Keys, packets, settings, code that runs every frame | [client](client.md) | [reference](reference/client.md) |
+| Keybinds, packets, settings,<br>code that runs every frame | [client](client.md) | [reference](reference/client.md) |
 | Screens and the HUD | [UI](ui.md) | [reference](reference/ui.md) |
 | Camera modes | [camera](details/camera.md) | |
 | Models and animations | [models](models.md) | |
