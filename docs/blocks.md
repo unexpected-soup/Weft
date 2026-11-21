@@ -118,28 +118,24 @@ r.block(&CRAFTING_TABLE)
 
 ### Layers and tints
 
+```rust
+r.block(&GRASS)  // grass block from base
+    .texture("dirt")
+    .top("grass_top").tint_kind(&tints::GRASS)
+    .sides("dirt").layer("grass_side_overlay").tint_kind(&tints::GRASS);
+```
+
 `layer(t)`, `tint(..)` and `tint_kind(..)` apply to the faces picked by the most recent face call (`texture`, `top`, `sides`...).
 
 - `layer(t)`: draws another texture over those faces
 - `tint(0xRRGGBB)`: multiplies their top layer by a fixed color
-- `tint_kind(&tints::GRASS)`: colors their top layer by the biome instead
+- `tint_kind(&tints::GRASS)`: colors their top layer by the biome instead. The engine provides `tints::GRASS`, `tints::FOLIAGE` and `tints::WATER`. To make your own, see [tint kinds](registration.md#tint-kind).
 
 `tint` makes a tinted copy on load, with its frames and connected tiles, so one white wool texture serves every color:
 
 ```rust
 r.block(&RED_WOOL).texture("wool").tint(0xB02E26);
 r.block(&BLUE_WOOL).texture("wool").tint(0x3C44AA);
-```
-
-A **tint kind** is a color that blocks take from the biome they stand in. The engine provides `tints::GRASS`, `tints::FOLIAGE` and `tints::WATER`. To make your own, see [tint kinds](registration.md#tint-kind).
-
-*base*'s grass block:
-
-```rust
-r.block(&GRASS)
-    .texture("dirt")
-    .top("grass_top").tint_kind(&tints::GRASS)
-    .sides("dirt").layer("grass_side_overlay").tint_kind(&tints::GRASS);
 ```
 
 Each layer is drawn by itself over the one under it, with its own animation, connected textures and tint: see [textures](textures.md) and [CTM](ctm.md).
@@ -365,22 +361,6 @@ A top slab placed into a bottom slab's cell makes the block `double`. A bottom s
 
 ## Events
 
-For more hooks, see [events](events.md). This section lists events exclusive to blocks.
-
-- `.on_use(|u| ..)`: when a player right-clicks it
-- `.on_place(|w, change| ..)`, `.on_break(..)`: when one of these blocks was placed or broken, handled at the end of the tick (1/20 s)
-- `.on_neighbor(..)`, `.on_scheduled(..)`: when a neighbor changed, or a tick you scheduled arrived
-- `.on_carried(..)`: when the block is part of a moving body and the body reached a new cell of the world (a drill, a plow)
-
-**`on_use` details:**
-- `u` gives `u.world()`, `u.pos()`, `u.player()` and `u.sneaking()`.
-- Return `true` if you handled the click, `false` to pass it on (a sneak-click that does something else).
-- By default a sneaking player can use a block only with empty hands. `.sneak_use(sneak_use::ALWAYS)` sends every sneaking click to `on_use`, and you check `u.sneaking()` yourself. `sneak_use::NEVER` sends none even if sneaking with empty hands.
-
-`on_place` and `on_break` run for this block only: `actions::PLACE_BLOCK` and `actions::BREAK_BLOCK` cover every block.
-
-A toggling lamp:
-
 ```rust
 r.block(&LAMP)
     .prop("lit", ["false", "true"])
@@ -392,6 +372,20 @@ r.block(&LAMP)
         true
     });
 ```
+
+- `.on_use(|u| ..)`: when a player right-clicks it
+- `.on_place(|w, change| ..)`, `.on_break(..)`: when one of these blocks was placed or broken, handled at the end of the tick (1/20 s)
+- `.on_neighbor(..)`, `.on_scheduled(..)`: when a neighbor changed, or a tick you scheduled arrived
+- `.on_carried(..)`: when the block is part of a moving body and the body reached a new cell of the world (a drill, a plow)
+
+For more hooks, see [events](events.md). This section lists events exclusive to blocks.
+
+**`on_use` details:**
+- `u` gives `u.world()`, `u.pos()`, `u.player()` and `u.sneaking()`.
+- Return `true` if you handled the click, `false` to pass it on (a sneak-click that does something else).
+- By default a sneaking player can use a block only with empty hands. `.sneak_use(sneak_use::ALWAYS)` sends every sneaking click to `on_use`, and you check `u.sneaking()` yourself. `sneak_use::NEVER` sends none even if sneaking with empty hands.
+
+`on_place` and `on_break` run for this block only: `actions::PLACE_BLOCK` and `actions::BREAK_BLOCK` cover every block.
 
 ## Hazards
 
@@ -408,29 +402,22 @@ A **hazard** lets the block deal damage. *base*'s cactus (`PRICKED` is a damage 
 | `on` | on top of it (magma) |
 | `head` | eyes inside the shape (like suffocation) |
 
-Chain these onto a hazard:
-
-- `.every(ticks)`: deals damage every `ticks` ticks (every tick by default)
-- `.fire(ticks)`: sets the entity on fire for `ticks` ticks
-- `.when(condition)`: deals damage only while `condition` holds for the entity there (`!Cond::flying()`)
-
-A bush that deals damage to anyone running through it:
+Another example:
 
 ```rust
 r.block(&BUSH)
     .hazard(Hazard::inside(1.0, &PRICKED).every(10).when(Cond::sprinting()));
 ```
 
+- `.every(ticks)`: deals damage every `ticks` ticks (every tick by default)
+- `.fire(ticks)`: sets the entity on fire for `ticks` ticks
+- `.when(condition)`: only while `condition` holds for the entity there (see [conditions](details/conditions.md))
+
 The engine already suffocates anyone whose head is in an opaque full block, and a block tagged `hot` without hazards of its own burns like lava.
 
 ## Plants and growth
 
 ### Plants
-
-- `.plant()`: draws two crossed flat planes. Nothing stops a walker and it breaks instantly
-- `.replaceable()`: makes the block count as empty space when someone tries to place a block at this position (grass behavior)
-- `.tall_plant("lower", "upper")`: makes it two blocks tall (its two pictures, with a `tint_kind` after it on both)
-- `.needs_below("#plant_soil")`: allows the block only on matching blocks and breaks it off when they are removed
 
 ```rust
 r.block(&DANDELION)
@@ -440,6 +427,11 @@ r.block(&DANDELION)
     .hitbox([5.0, 0.0, 5.0], [11.0, 10.0, 11.0])
     .needs_below("#plant_soil !#sand"); // Any soil that's not sand
 ```
+
+- `.plant()`: draws two crossed flat planes. Nothing stops a walker and it breaks instantly
+- `.replaceable()`: makes the block count as empty space when someone tries to place a block at this position (grass behavior)
+- `.tall_plant("lower", "upper")`: makes it two blocks tall (its two pictures, with a `tint_kind` after it on both)
+- `.needs_below("#plant_soil")`: allows the block only on matching blocks and breaks it off when they are removed
 
 ### Growing
 
@@ -556,14 +548,14 @@ r.block(&PILLAR)
 
 ## Blocks on the sides of a cell
 
-`.on_sides(allowed)` makes a one-pixel-thick layer that lies against the sides of its cell (vines, ladders). *base*'s ladder:
-
 ```rust
 r.block(&LADDER)
     .on_sides(Facings::HORIZONTAL)
     .climbable()
     .not_solid();
 ```
+
+`.on_sides(allowed)` makes a one-pixel-thick layer that lies against the sides of its cell (vines, ladders).
 
 `allowed` is `Facings::ALL` (vines grow everywhere), `Facings::HORIZONTAL` (walls only) or `Facings::only(&[Dir::Down])` (the floor only). The block gets one property per allowed side, from `north` to `down`, and the value is `"true"` for each side it lies against, so `.states` can check `p.is("north", "true")`.
 
