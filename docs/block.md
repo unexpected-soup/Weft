@@ -70,11 +70,9 @@ r.block(&RUBY_ORE)
     .drops("ruby", 1);
 ```
 
-| call | does |
-|---|---|
-| `hardness(h)` | breaking takes `h` × 1.5 s when the tool is allowed to harvest the block and `h` × 5 s when it is not, divided by the tool's speed. `0.0` is instant |
-| `mined_by(class, level)` | tools of that class mine it faster, and it drops nothing to a tool below tier `level` |
-| `drops(item, count)`, `drops_nothing()` | changes the default drop or removes it |
+- `hardness(h)`: breaking takes `h` × 1.5 s when the tool is allowed to harvest the block and `h` × 5 s when it is not, divided by the tool's speed. `0.0` is instant
+- `mined_by(class, level)`: tools of that class mine it faster, and it drops nothing to a tool below tier `level`
+- `drops(item, count)`, `drops_nothing()`: changes the default drop or removes it
 
 **Tiers:** `WOOD` 0, `STONE` 100, `IRON` 200 and `DIAMOND` 300. Other numbers work (testmod has a tier-250 pickaxe). `tool_tier::HAND` drops for any tool or none: dirt is `.mined_by("shovel", tool_tier::HAND)`, so a shovel is faster but not required.
 
@@ -122,11 +120,9 @@ r.block(&CRAFTING_TABLE)
 
 `layer(t)`, `tint(..)` and `tint_kind(..)` apply to the faces picked by the most recent face call (`texture`, `top`, `sides`...).
 
-| call | does |
-|---|---|
-| `layer(t)` | draws another texture over those faces |
-| `tint(0xRRGGBB)` | multiplies their top layer by a fixed color |
-| `tint_kind(&tints::GRASS)` | colors their top layer by the biome instead |
+- `layer(t)`: draws another texture over those faces
+- `tint(0xRRGGBB)`: multiplies their top layer by a fixed color
+- `tint_kind(&tints::GRASS)`: colors their top layer by the biome instead
 
 `tint` makes a tinted copy on load, with its frames and connected tiles, so one white wool texture serves every color:
 
@@ -160,13 +156,11 @@ Each layer is drawn by itself over the one under it, with its own animation, con
 
 ### Transparency
 
-| call | does |
-|---|---|
-| `.cutout()` | draws each pixel either fully or not at all (alpha of 0.1 or less is dropped), and by default lets light through (leaves, glass panes). A block made of boxes or a model file is cutout already |
-| `.translucent()` | draws pixels with partial alpha, so what is behind shows through them, and hides faces between neighbors of the same block (stained glass, ice) |
-| `.cull_same()` | does only the hiding |
-| `.light_opacity(n)` | 0 to 15: how much brightness the block removes from light passing through |
-| `.light_filter(r, g, b)` | instead changes the light's color by absorbing each channel separately (stained glass) |
+- `.cutout()`: draws each pixel either fully or not at all (alpha of 0.1 or less is dropped), and by default lets light through (leaves, glass panes). A block made of boxes or a model file is cutout already
+- `.translucent()`: draws pixels with partial alpha, so what is behind shows through them, and hides faces between neighbors of the same block (stained glass, ice)
+- `.cull_same()`: does only the hiding
+- `.light_opacity(n)`: 0 to 15: how much brightness the block removes from light passing through
+- `.light_filter(r, g, b)`: instead changes the light's color by absorbing each channel separately (stained glass)
 
 `light_opacity` is 15 for opaque blocks and 0 for everything else by default, so you only need it for in-between cases: leaves is 1, ice is 2.
 
@@ -174,11 +168,9 @@ Each layer is drawn by itself over the one under it, with its own animation, con
 
 A **particle** is a small visual effect, like smoke or sparks. By default the engine already throws pieces of the block when it is broken, hit, landed on or run on.
 
-| call | does |
-|---|---|
-| `.sound_group("base:block.stone")` | plays that group's `break`, `place`, `step` and `hit` sounds. Without a namespace the group is your mod's (`"stone"` means `mymod:block.stone`) |
-| `.effect(event, sound, particle)` | replaces the sound group's sound for one of those events (`break`, `place`, `step`, `hit`, `land`, `sprint`) with a sound event, and the default particles with a particle kind |
-| `.ambient_particle("mymod:spark")` | shows that particle around the block now and then, on clients only (torch smoke) |
+- `.sound_group("base:block.stone")`: plays that group's `break`, `place`, `step` and `hit` sounds. Without a namespace the group is your mod's (`"stone"` means `mymod:block.stone`)
+- `.effect(event, sound, particle)`: replaces the sound group's sound for one of those events (`break`, `place`, `step`, `hit`, `land`, `sprint`) with a sound event, and the default particles with a particle kind
+- `.ambient_particle("mymod:spark")`: shows that particle around the block now and then, on clients only (torch smoke)
 
 In `.effect`, `""` keeps the default of that part and `"none"` turns it off: `.effect("step", "mymod:squelch", "")` plays your sound and keeps the default particles.
 
@@ -320,13 +312,13 @@ r.block(&PISTON_HEAD)
 
 A state's orientation replaces the one `.facing(..)` would give, so you only need it where the front is not the part that turns.
 
-| `Orientation::...` | the model is turned so... |
-|---|---|
-| `front(dir)` | its front looks to `dir`, top up (what `.facing(..)` does by default) |
-| `up(dir)` | its top points to `dir` (a piston head) |
-| `new(attach, front)` | its bottom is against `attach` and its front looks to `front` (a bed: `new(Dir::Down, p.facing().opposite())`) |
-| `leaning(attach)` | it stands upright with its west side against `attach` (a torch on a wall) |
-| `axis("x")` | its top lies along the axis `x`, `y` or `z` (a log) |
+`Orientation::...` turns the model so:
+
+- `front(dir)`: its front looks to `dir`, top up (what `.facing(..)` does by default)
+- `up(dir)`: its top points to `dir` (a piston head)
+- `new(attach, front)`: its bottom is against `attach` and its front looks to `front` (a bed: `new(Dir::Down, p.facing().opposite())`)
+- `leaning(attach)`: it stands upright with its west side against `attach` (a torch on a wall)
+- `axis("x")`: its top lies along the axis `x`, `y` or `z` (a log)
 
 If `front` is along `attach` in `new`, the engine picks another front. The [reference](reference/blocks.md) lists the rest.
 
@@ -349,12 +341,10 @@ r.block(&SHELF)
     });
 ```
 
-| call | gives |
-|---|---|
-| `place.face()` | the face that was clicked |
-| `place.hit()` | the point just outside that face, from 0 to 1 from the cell's corner. `hit().y > 0.5` is the upper half whether the click was on a floor, under a ceiling, against a wall or on a slab |
-| `place.look_dir()` | where the player looks |
-| `props` | the properties of the block being placed. `props.facing()` already holds the result of `.facing(..)`, and `props.set(name, value)` changes one |
+- `place.face()`: the face that was clicked
+- `place.hit()`: the point just outside that face, from 0 to 1 from the cell's corner. `hit().y > 0.5` is the upper half whether the click was on a floor, under a ceiling, against a wall or on a slab
+- `place.look_dir()`: where the player looks
+- `props`: the properties of the block being placed. `props.facing()` already holds the result of `.facing(..)`, and `props.set(name, value)` changes one
 
 *base*'s door reads `hit()` this way to choose its hinge side.
 
@@ -377,12 +367,10 @@ A top slab placed into a bottom slab's cell makes the block `double`. A bottom s
 
 For more hooks, see [events](events.md). This section lists events exclusive to blocks.
 
-| call | runs when |
-|---|---|
-| `.on_use(\|u\| ..)` | a player right-clicks it |
-| `.on_place(\|w, change\| ..)`, `.on_break(..)` | one of these blocks was placed or broken, handled at the end of the tick (1/20 s) |
-| `.on_neighbor(..)`, `.on_scheduled(..)` | a neighbor changed, or a tick you scheduled arrived |
-| `.on_carried(..)` | the block is part of a moving body and the body reached a new cell of the world (a drill, a plow) |
+- `.on_use(|u| ..)`: when a player right-clicks it
+- `.on_place(|w, change| ..)`, `.on_break(..)`: when one of these blocks was placed or broken, handled at the end of the tick (1/20 s)
+- `.on_neighbor(..)`, `.on_scheduled(..)`: when a neighbor changed, or a tick you scheduled arrived
+- `.on_carried(..)`: when the block is part of a moving body and the body reached a new cell of the world (a drill, a plow)
 
 **`on_use` details:**
 - `u` gives `u.world()`, `u.pos()`, `u.player()` and `u.sneaking()`.
@@ -422,11 +410,9 @@ A **hazard** lets the block deal damage. *base*'s cactus (`PRICKED` is a damage 
 
 Chain these onto a hazard:
 
-| call | does |
-|---|---|
-| `.every(ticks)` | deals damage every `ticks` ticks (every tick by default) |
-| `.fire(ticks)` | sets the entity on fire for `ticks` ticks |
-| `.when(condition)` | deals damage only while `condition` holds for the entity there (`!Cond::flying()`) |
+- `.every(ticks)`: deals damage every `ticks` ticks (every tick by default)
+- `.fire(ticks)`: sets the entity on fire for `ticks` ticks
+- `.when(condition)`: deals damage only while `condition` holds for the entity there (`!Cond::flying()`)
 
 A bush that deals damage to anyone running through it:
 
@@ -441,12 +427,10 @@ The engine already suffocates anyone whose head is in an opaque full block, and 
 
 ### Plants
 
-| call | does |
-|---|---|
-| `.plant()` | draws two crossed flat planes. Nothing stops a walker and it breaks instantly |
-| `.replaceable()` | makes the block count as empty space when someone tries to place a block at this position (grass behavior) |
-| `.tall_plant("lower", "upper")` | makes it two blocks tall (its two pictures, with a `tint_kind` after it on both) |
-| `.needs_below("#plant_soil")` | allows the block only on matching blocks and breaks it off when they are removed |
+- `.plant()`: draws two crossed flat planes. Nothing stops a walker and it breaks instantly
+- `.replaceable()`: makes the block count as empty space when someone tries to place a block at this position (grass behavior)
+- `.tall_plant("lower", "upper")`: makes it two blocks tall (its two pictures, with a `tint_kind` after it on both)
+- `.needs_below("#plant_soil")`: allows the block only on matching blocks and breaks it off when they are removed
 
 ```rust
 r.block(&DANDELION)
@@ -480,12 +464,10 @@ r.loot(&WHEAT)
 
 Blocks that creep onto neighbors:
 
-| call | does |
-|---|---|
-| `.spreads("#grass_spreads_to", seconds, min_light)` | turns matching blocks in a box around it into this one: by default one block to each side (diagonals too), three down and one up |
-| `.spread_reach(min, max)` | sets how far it spreads (moss spreads every way and up walls) |
-| `.spread_when(cond)` | replaces the default condition for a target |
-| `.smothered_into("dirt", seconds)` | turns it into another block, after about `seconds`, once something opaque covers it |
+- `.spreads("#grass_spreads_to", seconds, min_light)`: turns matching blocks in a box around it into this one: by default one block to each side (diagonals too), three down and one up
+- `.spread_reach(min, max)`: sets how far it spreads (moss spreads every way and up walls)
+- `.spread_when(cond)`: replaces the default condition for a target
+- `.smothered_into("dirt", seconds)`: turns it into another block, after about `seconds`, once something opaque covers it
 
 **`spread_reach`:** `min` and `max` are `[x, y, z]` offsets from the block. `min` is the furthest west, down and north, `max` the furthest east, up and south. The default is `[-1, -3, -1]` to `[1, 1, 1]`, and each offset is at most 4 either way.
 
@@ -613,14 +595,12 @@ Each block in a cell works on its own: it can have a circuit, light, its own gro
 
 ### Changing a cell from code
 
-| call | does |
-|---|---|
-| `w.parts(pos)` | lists the blocks in the cell |
-| `w.part_add(pos, state)` | adds one, whatever its shape. Returns false for a duplicate, an unavailable cell, or when its hitbox would overlap a block in a neighboring cell |
-| `w.part_remove(pos, state)` | removes one |
-| `w.part_replace(pos, old, new)` | changes one |
-| `w.block(pos)` | returns the block the cell stands for |
-| `w.set_block(pos, ..)` | replaces everything, unless it is the same block and only a property changes |
+- `w.parts(pos)`: lists the blocks in the cell
+- `w.part_add(pos, state)`: adds one, whatever its shape. Returns false for a duplicate, an unavailable cell, or when its hitbox would overlap a block in a neighboring cell
+- `w.part_remove(pos, state)`: removes one
+- `w.part_replace(pos, old, new)`: changes one
+- `w.block(pos)`: returns the block the cell stands for
+- `w.set_block(pos, ..)`: replaces everything, unless it is the same block and only a property changes
 
 `w.prop` and `w.prop_set` find the part that has the property. Inside a block's own callback, `w.block(pos)` and `w.set_block(pos, ..)` mean that block, so a callback works the same in a cell with others.
 
@@ -628,11 +608,9 @@ Each block in a cell works on its own: it can have a circuit, light, its own gro
 
 By default a hit breaks the whole block. `.piece(min, max, left, alone)` goes inside `.states(..)` and lets a player break off part of a state:
 
-| parameter | meaning |
-|---|---|
-| `min`, `max` | a box in 1/16 units: a hit inside it breaks this piece |
-| `left` | the properties the state is left with (`"type=top"`) |
-| `alone` | the properties of the state whose drops the piece gives (`"type=bottom"` drops a bottom slab) |
+- `min`, `max`: a box in 1/16 units: a hit inside it breaks this piece
+- `left`: the properties the state is left with (`"type=top"`)
+- `alone`: the properties of the state whose drops the piece gives (`"type=bottom"` drops a bottom slab)
 
 A double slab breaks one half at a time:
 
@@ -657,14 +635,14 @@ format!("{} ({}), hardness {}", block_name(state), info.owner, info.hardness)
 
 `state` is a block state's id, and `block_info` returns `None` for a state that doesn't exist.
 
-| call | gives |
-|---|---|
-| `block_info(state)` | the state's block, mod (`owner`), `solid()`, `opaque()`, light, hardness, friction, model, textures, liquid and item |
-| `item_info(item)` | the item's mod, stack size, durability, attack, the block it places and the slot it is worn in |
-| `components_of(entry_kind::BLOCK, state)` | the name and schema of every component and tag on the state |
-| `entries_with(entry_kind::BLOCK, "logs")` | every state with that tag or component, one per state |
-| `texture_exists("othermod:block/log_oak_inner")` | whether that mod ships the texture (resource packs don't count) |
-| `asset_exists(name, "models", "json")` | the same for any other file |
+What each call gives:
+
+- `block_info(state)`: the state's block, mod (`owner`), `solid()`, `opaque()`, light, hardness, friction, model, textures, liquid and item
+- `item_info(item)`: the item's mod, stack size, durability, attack, the block it places and the slot it is worn in
+- `components_of(entry_kind::BLOCK, state)`: the name and schema of every component and tag on the state
+- `entries_with(entry_kind::BLOCK, "logs")`: every state with that tag or component, one per state
+- `texture_exists("othermod:block/log_oak_inner")`: whether that mod ships the texture (resource packs don't count)
+- `asset_exists(name, "models", "json")`: the same for any other file
 
 `components_of` lists names only: read a value with the component's handle (`Component::on_block`). In `texture_exists` and `asset_exists`, a name without a namespace is your mod's.
 
@@ -686,4 +664,3 @@ fn drill_target(world: &World, pos: BlockPos) -> Option<(&'static str, f32, Opti
 ```
 
 Read a custom component with `Component::<T>::named("othermod:property").on_block(state)`. `HARDNESS.on_block(state)` gives the configured hardness. An empty schema from `components_of` is a tag.
-
