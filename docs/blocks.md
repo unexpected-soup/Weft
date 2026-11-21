@@ -85,7 +85,7 @@ A **tag** groups things (`#sand`), and a **component** is a named value on a thi
 ```rust
 r.block(&RED_SAND)
     .tag("sand")        // cactus and sugar cane accept anything tagged sand
-    .set(&FUEL, 300);   // burns in a furnace (base_api::FUEL)
+    .set(&FUEL, 300);   // burns in a furnace (base_api::components::FUEL)
 ```
 
 [How to find out what tags already exist?](components-and-tags.md)
@@ -321,7 +321,7 @@ If `front` is along `attach` in `new`, the engine picks another front. The [refe
 `state_turned(state, o)` returns the state of any block turned by `o`: its `facing`, `axis` or sides are turned for you, and a block that can't turn comes back unchanged. Use it when you place something turned (a structure) or turn a block yourself (a wrench):
 
 ```rust
-let turned = state_turned(w.get(pos), Orientation::front(Dir::East));
+let turned = state_turned(w.block(pos), Orientation::front(Dir::East));
 w.set_block(pos, turned);
 ```
 
@@ -631,8 +631,8 @@ What each call gives:
 
 - `block_info(state)`: the state's block, mod (`owner`), `solid()`, `opaque()`, light, hardness, friction, model, textures, liquid and item
 - `item_info(item)`: the item's mod, stack size, durability, attack, the block it places and the slot it is worn in
-- `components_of(entry_kind::BLOCK, state)`: the name and schema of every component and tag on the state
-- `entries_with(entry_kind::BLOCK, "logs")`: every state with that tag or component, one per state
+- `components_of(abi::entry_kind::BLOCK, state)`: the name and schema of every component and tag on the state
+- `entries_with(abi::entry_kind::BLOCK, "logs")`: every state with that tag or component, one per state
 - `texture_exists("othermod:block/log_oak_inner")`: whether that mod ships the texture (resource packs don't count)
 - `asset_exists(name, "models", "json")`: the same for any other file
 
@@ -640,7 +640,7 @@ What each call gives:
 
 The last two calls let you make something for every mod's blocks only where the files exist, such as hollow logs for every log that has an `_inner` texture. See [world content](details/world-content.md).
 
-A state can override its block's components and tags, so a drill reading the block in front of it should read the state from the world. `block_info(state).name` is the block's registered name, and `name_of(entry_kind::BLOCK, state)` also includes the state's properties.
+A state can override its block's components and tags, so a drill reading the block in front of it should read the state from the world. `block_info(state).name` is the block's registered name, and `name_of(abi::entry_kind::BLOCK, state)` also includes the state's properties.
 
 ```rust
 static PICKAXE: Tag = Tag::named("mineable/pickaxe");

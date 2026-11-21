@@ -19,7 +19,7 @@ fn init(r: &mut Registry) {
 }
 ```
 
-This is *base*'s chest. The block needs a texture and a name like any other block (see [Blocks](blocks.md)).
+This is *base*'s chest (simplified). The block needs a texture and a name like any other block (see [Blocks](blocks.md)).
 
 - `.entity(|e| e.inventory(27))`: every placed chest gets a block entity with 27 slots.
 - `.opens(&CHEST_MENU)`: using the block opens this menu.
@@ -205,7 +205,7 @@ See [States](blocks.md#states-blocks-that-change). `tick_furnaces` in `mods/base
 
 ### Catching up
 
-The third value of `iter_mut()` (see [tick](#the-tick)) is how many ticks the call stands for. It is 1 normally. When the block entity's area was unloaded, or the world's time jumped, the engine doesn't tick it thousands of times. It hands over the missed ticks in one call.
+The third value of `iter_mut()` (see [tick](#the-tick)) is how many ticks the call stands for. It is 1 normally. When the block entity's area was unloaded, or the world's time jumped, the engine doesn't tick it thousands of times. It hands over the missed ticks in up to 20 calls.
 
 So a block entity that should keep working while nobody is near does `ticks` ticks of work in one go. For a furnace that is arithmetic: as many items as the fuel, the input and the output room allow. See `catch_up` in base's `block_entities.rs` and testmod's generator.
 
@@ -451,10 +451,6 @@ This keeps the cubes from block `from` to block `to` for 200 ticks under the key
 | `All` | everything, as if a player stood there |
 
 All tickets together keep at most `core:max_forced_cubes` cubes, and `question::FORCE_LOAD` lets a mod refuse one (someone else's claim).
-
-### In a cell with other blocks
-
-Only one block in a cell can have a block entity, see: [Block entities and circuits](blocks.md#block-entities-and-circuits).
 
 ### Another mod's block entity
 

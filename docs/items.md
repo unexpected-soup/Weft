@@ -201,10 +201,10 @@ r.item(&IRON_HELMET)
 ```
 
 - `wearable(&SLOT, inflate, texture)`: the slot (any mod's, `EquipmentSlot::named("base:head")`), how many pixels the armor sticks out from the body, and the texture under `textures/entity/`.
-- `modifier(m).worn()`: the modifier applies while the item is worn instead of held. Armor points is a modifier, see: [modifiers](modifiers.md)
+- `modifier(..).worn()`: the modifier applies while the item is worn instead of held. Armor points is a modifier, see: [modifiers](modifiers.md)
 - `wearable_model(&SLOT, "model", "bone")`: a model on a bone of the wearer. Testmod's fox tail is worn on `base:legs` and only whoever wears it has a tail.
 
-Skin layers `inflate` by 0.5 on the head and 0.25 on the rest of the body. Please use bigger values for armor so it doesn't look awkward :p
+Skin layers `inflate` by 0.5 on the head and 0.25 on the rest of the body. Please use bigger values for armor so it doesn't look awkward.
 
 Slots, textures and bone layout are in [models](models.md#armor-and-other-worn-items).
 
