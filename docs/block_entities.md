@@ -25,7 +25,7 @@ This is *base*'s chest (simplified). The block needs a texture and a name like a
 - `.opens(&CHEST_MENU)`: using the block opens this menu.
 - `Slots::chest(3)`: three rows of nine slots.
 - `.holder()`: the group shows the inventory of what the menu was opened on. Leave it out for slots that should be empty (like a crafting grid)
-- `.default_screen()`: the window is its title, your `.group` calls in order, then the player's inventory. See [screens](screens.md#default-screen) if you want a different layout.
+- `.default_screen()`: the window is its title, your `.group` calls in order, then the player's inventory. See [screens](ui.md#menus) if you want a different layout.
 
 Two terms:
 
@@ -59,7 +59,7 @@ You can jump to any section you're interested in, or just read the page top-to-b
 | what items a slot accepts | [.accepts](#slots) |
 | which groups the sort button touches | [.allow_sorting](#slots) |
 | which group a shift-click fills first | [.priority](#slots) |
-| progress indicator (like burning), window layout | [The screen](#the-screen) |
+| progress indicator (like burning), window layout | [UI](ui.md) |
 | what happens every tick | [The tick](#the-tick) |
 | catching up after being unloaded | [Catching up](#catching-up) |
 | keep state when broken | [Keeping state when broken](#keeping-state-when-broken) |
@@ -208,38 +208,6 @@ See [States](blocks.md#states-blocks-that-change). `tick_furnaces` in `mods/base
 The third value of `iter_mut()` (see [tick](#the-tick)) is how many ticks the call stands for. It is 1 normally. When the block entity's area was unloaded, or the world's time jumped, the engine doesn't tick it thousands of times. It hands over the missed ticks in up to 20 calls.
 
 So a block entity that should keep working while nobody is near does `ticks` ticks of work in one go. For a furnace that is arithmetic: as many items as the fuel, the input and the output room allow. See `catch_up` in base's `block_entities.rs` and testmod's generator.
-
-## The screen
-
-`.screen(|ui| ..)` on the menu builds the window instead of `.default_screen()`.
-
-```rust
-.screen(|ui| {
-    ui.panel("panel", S::column().pad(7.0).gap(4.0).stretch(), |ui| {
-        ui.title();
-        ui.row(S::row().gap(8.0), |ui| {
-            ui.group("input");
-            ui.recipe_arrow_bind(|c| c.menu_component(&SMELTING).map_or(0.0, |s| ratio(s.cook, s.cook_max)));
-            ui.group("output");
-        });
-        ui.player_inventory(true);
-    });
-})
-```
-
-What each call draws:
-
-- `ui.title()`: the block's name.
-- `ui.group("input")`: a group as its grid.
-- `ui.group_slot("input", 1)`: one slot of a group, when a layout places slots apart.
-- `ui.player_inventory(true)`: the player's inventory and hotbar (`true` adds the "Inventory" title).
-- `ui.equipment()`: the equipment of what the menu is open on (a mob's, else the player's).
-- `ui.recipe_arrow()`: an arrow that opens the menu's recipes.
-- `ui.recipe_arrow_bind(f)`: the same, filled by `f`, a number from 0 to 1.
-
-`c.menu_component(&C)` reads the block entity's component for the screen. It only works when the component has `SYNC_MENU`.
-
-A menu opened from code and not from a block uses `menu.<ns>.<n>` from the lang file as its title. `w.open_menu(player, &MENU, pos)` opens it from code. Parts, layout and themes are in the [UI guide](ui.md).
 
 ## Recipes
 

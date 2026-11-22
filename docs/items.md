@@ -201,7 +201,7 @@ r.item(&IRON_HELMET)
 ```
 
 - `wearable(&SLOT, inflate, texture)`: the slot (any mod's, `EquipmentSlot::named("base:head")`), how many pixels the armor sticks out from the body, and the texture under `textures/entity/`.
-- `modifier(..).worn()`: the modifier applies while the item is worn instead of held. Armor points is a modifier, see: [modifiers](modifiers.md)
+- `modifier(..).worn()`: the modifier applies while the item is worn instead of held. Armor points is a modifier, see: [modifiers](modifiers.md).
 - `wearable_model(&SLOT, "model", "bone")`: a model on a bone of the wearer. Testmod's fox tail is worn on `base:legs` and only whoever wears it has a tail.
 
 Skin layers `inflate` by 0.5 on the head and 0.25 on the rest of the body. Please use bigger values for armor so it doesn't look awkward.
@@ -274,15 +274,13 @@ r.item(&SCROLL).one_handed_action("hold_one");
 r.item(&WAND).use_priority(10);
 ```
 
-- `two_handed()`: needs both hands. It does nothing while the other hand holds something, and it can't go in the other hand.
+- `two_handed()`: needs both hands, so it does nothing while the other hand holds something, and it can't go in the other hand.
 - `one_handed_action("name")`: lets a `two_handed` item be held in a single hand too, playing this action. It can then go in the other hand as well.
-- `use_priority(n)`: on a right click, the hand whose item has the higher priority goes first (0 by default, then the main hand). The other hand gets its turn when this item's `on_use` returns `false`: a bow with no arrows.
+- `use_priority(n)`: right click runs for an item with the highest priority (0 by default, then the main hand). The other hand gets its turn when this item's `on_use` returns `false`: a bow with no arrows.
 
 The clips, poses and where the item sits in the hand are in [models](models.md#items-in-the-hand).
 
 ## Stacks with their own data
-
-A stack carries its own values of components, like the wear a tool took. You never touch the raw data yourself.
 
 ```rust
 value! { pub struct Quality { pub grade: u32, pub maker: u32 } }
@@ -298,12 +296,9 @@ let out = PICKAXE.stack(1)
 inventory.set(slot, out);
 ```
 
-`value!` makes a struct that can be stored as a component's value. What each call does:
-
-- `QUALITY.on_stack(&stack)`: the stack's own value, else what the item has
-- `QUALITY.on_stack_own(&stack)`: only the stack's own
-- `stack.with(&C, v)`: sets a value
-- `stack.without(&C)`: removes it
+- `QUALITY.on_stack(&stack)`: the stack's own value, else what the item got
+- `QUALITY.on_stack_own(&stack)`: only the stack's own value
+- `stack.with(&C, v)`, `stack.without(&C)`: sets or removes its value
 - `stack.with_wear(n)`, `stack.wear()`: writes and reads the wear
 
 `.with(..)` on a component nobody declared with `r.stack_component` does nothing and says so in the log. Stacks with different data don't merge.
@@ -315,6 +310,7 @@ The second argument of `r.stack_component` is its flags (`abi::stack_flags`), or
 | `SERVER_ONLY` | isn't sent to clients, including nested stacks |
 | `NO_SAVE` | isn't saved |
 | `VISUAL` | changes how the stack looks (see below) |
+
 
 A stack's own value wins over its item's for everything the engine reads too. Give one stack its own `DURABILITY`, `MINING_SPEED`, `TOOL_LEVEL`, `ATTACK_DAMAGE`, `ATTACK_SPEED`, `USE_TICKS` or a `tools/<class>` tag, and it digs, wears and hits by those. `stack.with_modifiers(&[Modifier::add(&attribute::ATTACK_DAMAGE, 2.0)])` gives it modifiers of its own instead of its item's (an enchanted sword).
 

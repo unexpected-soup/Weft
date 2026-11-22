@@ -57,7 +57,7 @@ Jump to a section you're interested in, or just read the page top-to-bottom.
 | what happens on right click, on place, on break | [Events](#events) |
 | damage on contact | [Hazards](#hazards) |
 | spreading (like grass) | [Spreading](#spreading) |
-| what happens by itself (crops drying, sand falling) | [Rules](rules.md) |
+| what happens by itself (crops drying, sand falling) | [Rules](details/rules.md) |
 | waterlogging | [Several blocks in one cell](#several-blocks-in-one-cell) |
 | a block from another mod | [Changing something of another mod](details/editing-others.md) |
 
@@ -465,7 +465,7 @@ Blocks that creep onto neighbors:
 
 **`spread_when`:** the default condition is enough light above the target, and not covered. Because your condition replaces it, `min_light` no longer applies unless your condition checks light itself: `.spread_when(Cond::new("light(9.., up)"))`. See [conditions](details/conditions.md).
 
-`.needs_below`, `.grows`, `.smothered_into` and similar ones are shortcuts for [rules](rules.md), and you can make one yourself.
+`.needs_below`, `.grows`, `.smothered_into` and similar ones are shortcuts for [rules](details/rules.md), and you can make one yourself.
 
 ## Stairs, slabs and other shapes
 
