@@ -141,7 +141,7 @@ The value lives on the server. A player's game only knows it if the server **syn
 - `SYNC_WATCHERS`: every player who can see the block entity gets a copy.
 - `SYNC_OWNER`: only the player the entity belongs to gets a copy (a player's hunger on the HUD). It is rarely needed for a block entity.
 
-How another mod reads it: [components and tags](components-and-tags.md).
+How another mod reads it: [components and tags](details/components-and-tags.md).
 
 ### Keeping state when broken
 

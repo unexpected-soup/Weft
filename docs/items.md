@@ -95,7 +95,7 @@ Some tags that *base* reads: (files mentioned here are located in `mods/base/src
 
 A recipe like `pickaxes/copper` expects that `ingots/copper` exists. If there's none, it fails to get registered. See `recipes.rs`.
 
-For more: [How to find out what tags already exist?](components-and-tags.md)
+For more: [How to find out what tags already exist?](details/components-and-tags.md)
 
 ## Stack size, durability and leftovers
 
@@ -314,7 +314,7 @@ The second argument of `r.stack_component` is its flags (`abi::stack_flags`), or
 
 A stack's own value wins over its item's for everything the engine reads too. Give one stack its own `DURABILITY`, `MINING_SPEED`, `TOOL_LEVEL`, `ATTACK_DAMAGE`, `ATTACK_SPEED`, `USE_TICKS` or a `tools/<class>` tag, and it digs, wears and hits by those. `stack.with_modifiers(&[Modifier::add(&attribute::ATTACK_DAMAGE, 2.0)])` gives it modifiers of its own instead of its item's (an enchanted sword).
 
-Ids inside a value shift when a mod comes or goes. The same warning applies to any saved component (see [components](components-and-tags.md)).
+Ids inside a value shift when a mod comes or goes. The same warning applies to any saved component (see [components](details/components-and-tags.md)).
 
 ### A look that depends on the stack
 

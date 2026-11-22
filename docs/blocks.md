@@ -88,7 +88,7 @@ r.block(&RED_SAND)
     .set(&FUEL, 300);   // burns in a furnace (base_api::components::FUEL)
 ```
 
-[How to find out what tags already exist?](components-and-tags.md)
+[How to find out what tags already exist?](details/components-and-tags.md)
 
 ## Textures
 
