@@ -152,6 +152,7 @@ pub struct VulkanBackend {
     capture_requested: bool,
     capture: Option<(vk::Buffer, Allocation, u32, u32, vk::Format)>,
     device_name: String,
+    precompile_threads: bool,
     queries: vk::QueryPool,
     ts_period: f32,
     gpu_times: Vec<f32>,
@@ -339,6 +340,11 @@ impl VulkanBackend {
                 .map(|s| s.to_string_lossy().into_owned())
                 .unwrap_or_default();
             log::info!("GPU: {device_name}");
+            let precompile_threads = match std::env::var("WEFT_VULKAN_PRECOMPILE").as_deref() {
+                Ok("1") => true,
+                Ok("0") => false,
+                _ => !(cfg!(windows) && props.vendor_id == 0x8086),
+            };
             let available: Vec<_> = instance
                 .enumerate_device_extension_properties(pdev)
                 .unwrap_or_default()
@@ -653,6 +659,7 @@ impl VulkanBackend {
                 capture_requested: false,
                 capture: None,
                 device_name,
+                precompile_threads,
                 queries,
                 ts_period: props.limits.timestamp_period,
                 gpu_times: Vec::new(),
@@ -1866,6 +1873,9 @@ impl Backend for VulkanBackend {
 
     fn precompile(&mut self, desc: &ComputeDesc) {
         use std::sync::atomic::Ordering;
+        if !self.precompile_threads {
+            return;
+        }
         let Ok(cs) = self.spirv(desc.shader, naga::ShaderStage::Compute, desc.entry) else { return };
         let Ok((layout, set_layout, _)) = self.layout_for(desc.shader) else {
             unsafe { self.device.destroy_shader_module(cs, None) };
